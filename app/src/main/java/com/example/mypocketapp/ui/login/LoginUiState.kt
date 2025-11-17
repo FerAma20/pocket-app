@@ -2,6 +2,7 @@ package com.example.mypocketapp.ui.login
 
 // LoginUiState.kt
 data class LoginUiState(
+    val idCompany: String = "",
     val email: String = "",
     val password: String = "",
     val isPasswordVisible: Boolean = false,
@@ -11,6 +12,7 @@ data class LoginUiState(
 )
 
 sealed interface LoginEvent {
+    data class CompanyChanged(val value: String) : LoginEvent
     data class EmailChanged(val value: String) : LoginEvent
     data class PasswordChanged(val value: String) : LoginEvent
     object TogglePasswordVisibility : LoginEvent

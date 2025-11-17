@@ -18,6 +18,10 @@ class LoginViewModel(
 
     fun onEvent(event: LoginEvent) {
         when (event) {
+            is LoginEvent.CompanyChanged -> _ui.value = _ui.value.copy(
+                idCompany = event.value,
+                errorMessage = null
+            )
             is LoginEvent.EmailChanged -> _ui.value = _ui.value.copy(
                 email = event.value,
                 errorMessage = null
@@ -34,10 +38,15 @@ class LoginViewModel(
     }
 
     private fun submit() {
+        val idCompany = _ui.value.idCompany.trim()
         val email = _ui.value.email.trim()
         val password = _ui.value.password
 
         // Validaciones simples
+        if (idCompany.isEmpty()) {
+            _ui.value = _ui.value.copy(errorMessage = "Ingresa el identificador de empresa")
+            return
+        }
         if (!email.contains("@")) {
             _ui.value = _ui.value.copy(errorMessage = "Email inválido")
             return
@@ -49,7 +58,7 @@ class LoginViewModel(
 
         viewModelScope.launch {
             _ui.value = _ui.value.copy(isLoading = true, errorMessage = null)
-            val result = repo.login("",email, password)
+            val result = repo.login(idCompany, email, password)
             _ui.value = if (result.isSuccess) {
                 _ui.value.copy(isLoading = false, isLoggedIn = true)
             } else {
