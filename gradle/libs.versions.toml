@@ -10,8 +10,10 @@ activityCompose = "1.11.0"
 composeBom = "2024.09.00"
 navigationCompose = "2.8.3"
 serialization-json = "1.7.3"
+serialization = "2.0.21"
 retrofit = "2.11.0"
 retrofit-kotlinx-converter = "1.0.0"
+javax-inject = "1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -33,9 +35,11 @@ androidx-navigation-compose = { module = "androidx.navigation:navigation-compose
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization-json" }
 retrofit-core = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-kotlinx-converter = { group = "com.jakewharton.retrofit", name = "retrofit2-kotlinx-serialization-converter", version.ref = "retrofit-kotlinx-converter" }
+javax-inject = { group = "javax.inject", name = "javax.inject", version.ref = "javax-inject" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "serialization" }
 

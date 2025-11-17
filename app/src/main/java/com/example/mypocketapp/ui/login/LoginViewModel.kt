@@ -49,7 +49,7 @@ class LoginViewModel(
 
         viewModelScope.launch {
             _ui.value = _ui.value.copy(isLoading = true, errorMessage = null)
-            val result = repo.login(email, password)
+            val result = repo.login("",email, password)
             _ui.value = if (result.isSuccess) {
                 _ui.value.copy(isLoading = false, isLoggedIn = true)
             } else {
