@@ -1,5 +1,8 @@
 package com.example.mypocketapp.data.repository
 
+import com.example.mypocketapp.data.remote.dto.ApiEnvelope
+import com.example.mypocketapp.data.remote.dto.LoginData
+
 interface AuthRepository {
-    suspend fun login(email: String, password: String): Result<Unit>
+    suspend fun login(idCompany: String, email: String, password: String): Result<ApiEnvelope<LoginData>>
 }

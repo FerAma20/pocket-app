@@ -3,14 +3,18 @@ package com.example.mypocketapp.ui.login
 // LoginViewModel.kt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mypocketapp.data.local.SessionDataStore
 import com.example.mypocketapp.data.repository.AuthRepository
-import com.example.mypocketapp.data.repository.FakeAuthRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel(
-    private val repo: AuthRepository = FakeAuthRepository()
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val repo: AuthRepository,
+    private val sessionStore: SessionDataStore
 ) : ViewModel() {
 
     private val _ui = MutableStateFlow(LoginUiState())
@@ -18,6 +22,10 @@ class LoginViewModel(
 
     fun onEvent(event: LoginEvent) {
         when (event) {
+            is LoginEvent.CompanyChanged -> _ui.value = _ui.value.copy(
+                idCompany = event.value,
+                errorMessage = null
+            )
             is LoginEvent.EmailChanged -> _ui.value = _ui.value.copy(
                 email = event.value,
                 errorMessage = null
@@ -34,10 +42,15 @@ class LoginViewModel(
     }
 
     private fun submit() {
+        val idCompany = _ui.value.idCompany.trim()
         val email = _ui.value.email.trim()
         val password = _ui.value.password
 
         // Validaciones simples
+        if (idCompany.isEmpty()) {
+            _ui.value = _ui.value.copy(errorMessage = "Ingresa el identificador de empresa")
+            return
+        }
         if (!email.contains("@")) {
             _ui.value = _ui.value.copy(errorMessage = "Email inválido")
             return
@@ -49,8 +62,15 @@ class LoginViewModel(
 
         viewModelScope.launch {
             _ui.value = _ui.value.copy(isLoading = true, errorMessage = null)
-            val result = repo.login(email, password)
-            _ui.value = if (result.isSuccess) {
+            val result = repo.login(idCompany, email, password)
+            result.onSuccess { envelope ->
+                val token = envelope.data?.accessToken
+                if (!token.isNullOrBlank()) {
+                    sessionStore.saveSession(token)
+                }
+            }.onFailure {
+            }
+            _ui.value = if (result.isSuccess ) {
                 _ui.value.copy(isLoading = false, isLoggedIn = true)
             } else {
                 _ui.value.copy(
@@ -59,5 +79,9 @@ class LoginViewModel(
                 )
             }
         }
+    }
+
+    fun logout() {
+        viewModelScope.launch { sessionStore.clearSession() }
     }
 }

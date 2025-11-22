@@ -1,7 +1,10 @@
 package com.example.mypocketapp.ui.navigation
 
 // NavGraph.kt
+// ui/navigation/NavGraph.kt
+
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -15,18 +18,29 @@ object Routes {
 }
 
 @Composable
-fun AppNavHost(navController: NavHostController) {
-    NavHost(navController, startDestination = Routes.LOGIN) {
+fun AppNavHost(
+    navController: NavHostController,
+    startDestination: String = Routes.LOGIN
+) {
+    NavHost(
+        navController = navController,
+        startDestination = startDestination
+    ) {
         composable(Routes.LOGIN) {
-            val vm = androidx.lifecycle.viewmodel.compose.viewModel<LoginViewModel>()
-            LoginScreen(viewModel = vm) {
-                navController.navigate(Routes.HOME) {
-                    popUpTo(Routes.LOGIN) { inclusive = true }
+            // inyecta automáticamente el ViewModel desde el grafo de Hilt
+            val vm: LoginViewModel = hiltViewModel()
+            LoginScreen(
+                viewModel = vm,
+                onLoginSuccess = {
+                    navController.navigate(Routes.HOME) {
+                        popUpTo(Routes.LOGIN) { inclusive = true }
+                    }
                 }
-            }
+            )
         }
+
         composable(Routes.HOME) {
-            HomeScreen()
+            HomeScreen( )
         }
     }
 }
