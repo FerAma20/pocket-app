@@ -8,6 +8,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.mypocketapp.ui.appRoot.AppRoot
 import com.example.mypocketapp.ui.home.HomeScreen
 import com.example.mypocketapp.ui.login.LoginScreen
 import com.example.mypocketapp.ui.login.LoginViewModel
@@ -16,6 +17,8 @@ object Routes {
     const val LOGIN = "login"
     const val HOME = "home"
 }
+
+
 
 @Composable
 fun AppNavHost(
@@ -38,9 +41,9 @@ fun AppNavHost(
                 }
             )
         }
-
         composable(Routes.HOME) {
-            HomeScreen( )
+            val vm: LoginViewModel = hiltViewModel()
+            AppRoot(viewModel = vm,)
         }
     }
 }
