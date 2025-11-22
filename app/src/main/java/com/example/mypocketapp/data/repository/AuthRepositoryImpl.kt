@@ -16,24 +16,17 @@ class AuthRepositoryImpl @Inject constructor(
     private val json: Json
 ) : AuthRepository {
 
-    override suspend fun login(idCompany: String, email: String, password: String): Result<LoginData> {
+    override suspend fun login(idCompany: String, email: String, password: String): Result<ApiEnvelope<LoginData>> {
         return runCatching {
             val response = api.login(LoginRequest(idCompany, email, password))
             response.requireBodyOrError()
         }
     }
 
-    private fun Response<ApiEnvelope<LoginData>>.requireBodyOrError(): LoginData {
-        if (!isSuccessful) {
-            error("Error HTTP ${code()}")
-        }
+    private fun Response<ApiEnvelope<LoginData>>.requireBodyOrError(): ApiEnvelope<LoginData> {
+        if (!isSuccessful) error("Error HTTP ${code()}")
         val body = body() ?: error("Respuesta vacía del servidor")
-
-        // Tu API puede devolver 200 con status=false
-        if (!body.status) {
-            error(body.message.ifBlank { "Credenciales inválidas" })
-        }
-        return body.data ?: error("No se recibió 'data' en la respuesta")
+        if (!body.status) error(body.message.ifBlank { "Credenciales inválidas" })
+        return body ?: error("No se recibió 'data' en la respuesta")
     }
-
 }

@@ -4,13 +4,15 @@ package com.example.mypocketapp.ui.login
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mypocketapp.data.repository.AuthRepository
-import com.example.mypocketapp.data.repository.FakeAuthRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel(
-    private val repo: AuthRepository = FakeAuthRepository()
+@HiltViewModel
+class LoginViewModel @Inject constructor(
+    private val repo: AuthRepository
 ) : ViewModel() {
 
     private val _ui = MutableStateFlow(LoginUiState())
@@ -59,7 +61,7 @@ class LoginViewModel(
         viewModelScope.launch {
             _ui.value = _ui.value.copy(isLoading = true, errorMessage = null)
             val result = repo.login(idCompany, email, password)
-            _ui.value = if (result.isSuccess) {
+            _ui.value = if (result.isSuccess ) {
                 _ui.value.copy(isLoading = false, isLoggedIn = true)
             } else {
                 _ui.value.copy(

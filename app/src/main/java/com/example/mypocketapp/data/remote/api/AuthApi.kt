@@ -4,12 +4,11 @@ package com.example.mypocketapp.data.remote.api
 import com.example.mypocketapp.data.remote.dto.ApiEnvelope;
 import com.example.mypocketapp.data.remote.dto.LoginData;
 import com.example.mypocketapp.data.remote.dto.LoginRequest;
-
-import retrofit2.Response;
+import retrofit2.Response
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
 interface AuthApi {
-    @POST("api/auth/signin") // ajusta la ruta si es distinta
-    suspend fun login(@Body body:LoginRequest): Response<ApiEnvelope<LoginData>>
+    @POST("api/auth/signin")
+    suspend fun login(@Body body: LoginRequest): Response<ApiEnvelope<LoginData>>
 }

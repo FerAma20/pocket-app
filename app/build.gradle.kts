@@ -18,7 +18,7 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
+        buildConfigField("String", "API_BASE_URL", "\"https://qa-api.mipocketapp.com/\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -40,9 +40,11 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     buildToolsVersion = "36.0.0"
 }
+
 
 dependencies {
 
@@ -62,6 +64,8 @@ dependencies {
     implementation(libs.javax.inject)
     implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.android)
+    implementation(libs.okhttp.core)
+    implementation(libs.okhttp.logging)
     ksp(libs.hilt.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

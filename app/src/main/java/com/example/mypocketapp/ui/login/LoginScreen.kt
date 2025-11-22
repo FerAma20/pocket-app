@@ -16,19 +16,21 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel,
-    onLoggedIn: () -> Unit
+    onLoginSuccess: () -> Unit
 ) {
-    val ui by viewModel.ui.collectAsStateWithLifecycle()
+    val ui = viewModel.ui.collectAsState()
     val focus = LocalFocusManager.current
 
-    LaunchedEffect(ui.isLoggedIn) {
-        if (ui.isLoggedIn) onLoggedIn()
+    if (ui.value.isLoggedIn) {
+        onLoginSuccess()
     }
 
     Box(
@@ -43,7 +45,7 @@ fun LoginScreen(
 
             // Empresa
             OutlinedTextField(
-                value = ui.idCompany,
+                value = ui.value.idCompany,
                 onValueChange = { viewModel.onEvent(LoginEvent.CompanyChanged(it)) },
                 label = { Text("Empresa (idCompany)") },
                 singleLine = true,
@@ -58,7 +60,7 @@ fun LoginScreen(
 
             // Email
             OutlinedTextField(
-                value = ui.email,
+                value = ui.value.email,
                 onValueChange = { viewModel.onEvent(LoginEvent.EmailChanged(it)) },
                 label = { Text("Email") },
                 singleLine = true,
@@ -73,13 +75,13 @@ fun LoginScreen(
 
             // Password
             OutlinedTextField(
-                value = ui.password,
+                value = ui.value.password,
                 onValueChange = { viewModel.onEvent(LoginEvent.PasswordChanged(it)) },
                 label = { Text("Contraseña") },
                 singleLine = true,
-                visualTransformation = if (ui.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                visualTransformation = if (ui.value.isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
-                    val text = if (ui.isPasswordVisible) "Ocultar" else "Mostrar"
+                    val text = if (ui.value.isPasswordVisible) "Ocultar" else "Mostrar"
                     TextButton(onClick = { viewModel.onEvent(LoginEvent.TogglePasswordVisibility) }) {
                         Text(text)
                     }
@@ -95,18 +97,18 @@ fun LoginScreen(
                 modifier = Modifier.fillMaxWidth()
             )
 
-            if (ui.errorMessage != null) {
+            if (ui.value.errorMessage != null) {
                 Spacer(Modifier.height(8.dp))
-                Text(ui.errorMessage!!, color = MaterialTheme.colorScheme.error)
+                Text(ui.value.errorMessage!!, color = MaterialTheme.colorScheme.error)
             }
 
             Spacer(Modifier.height(20.dp))
             Button(
                 onClick = { viewModel.onEvent(LoginEvent.Submit) },
-                enabled = !ui.isLoading,
+                enabled = !ui.value.isLoading,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                if (ui.isLoading) {
+                if (ui.value.isLoading) {
                     CircularProgressIndicator(strokeWidth = 2.dp, modifier = Modifier.size(20.dp))
                     Spacer(Modifier.width(8.dp))
                     Text("Ingresando…")
