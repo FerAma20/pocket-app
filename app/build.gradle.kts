@@ -66,6 +66,7 @@ dependencies {
     implementation(libs.hilt.android)
     implementation(libs.okhttp.core)
     implementation(libs.okhttp.logging)
+    implementation(libs.androidx.datastore.preferences)
     ksp(libs.hilt.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

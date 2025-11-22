@@ -3,6 +3,7 @@ package com.example.mypocketapp.ui.login
 // LoginViewModel.kt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.mypocketapp.data.local.SessionDataStore
 import com.example.mypocketapp.data.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +13,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val repo: AuthRepository
+    private val repo: AuthRepository,
+    private val sessionStore: SessionDataStore
 ) : ViewModel() {
 
     private val _ui = MutableStateFlow(LoginUiState())
@@ -61,6 +63,13 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _ui.value = _ui.value.copy(isLoading = true, errorMessage = null)
             val result = repo.login(idCompany, email, password)
+            result.onSuccess { envelope ->
+                val token = envelope.data?.accessToken
+                if (!token.isNullOrBlank()) {
+                    sessionStore.saveSession(token)
+                }
+            }.onFailure {
+            }
             _ui.value = if (result.isSuccess ) {
                 _ui.value.copy(isLoading = false, isLoggedIn = true)
             } else {
@@ -70,5 +79,9 @@ class LoginViewModel @Inject constructor(
                 )
             }
         }
+    }
+
+    fun logout() {
+        viewModelScope.launch { sessionStore.clearSession() }
     }
 }
