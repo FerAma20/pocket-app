@@ -15,6 +15,7 @@ import retrofit2.Retrofit
 import javax.inject.Inject
 import javax.inject.Named
 import androidx.compose.runtime.getValue
+import com.example.mypocketapp.ui.MainViewModel
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -24,6 +25,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d("SmokeTest", "Retrofit baseUrl = $baseUrl")
+        val vm = MainViewModel()
+        val result = vm.sum(7, 5)
+        Log.d("JNI_TEST", "Resultado JNI: $result")
         setContent {
             val isLoggedIn by sessionStore.isLoggedInFlow.collectAsState(initial = false)
             MyPocketAppTheme {
