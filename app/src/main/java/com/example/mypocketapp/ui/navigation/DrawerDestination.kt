@@ -3,6 +3,7 @@ package com.example.mypocketapp.ui.navigation
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.BarChart
+import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
@@ -31,6 +32,12 @@ sealed class DrawerDestination(
         icon = Icons.Filled.BarChart
     )
 
+    object Camera : DrawerDestination(
+        route = "camera",
+        title = "Camara",
+        icon = Icons.Filled.Camera
+    )
+
     object Notifications : DrawerDestination(
         route = "notifications",
         title = "Notificaciones",
@@ -49,6 +56,7 @@ sealed class DrawerDestination(
             Dashboard,
             Accounts,
             Reports,
+            Camera,
             Notifications
         )
     }

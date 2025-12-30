@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.mypocketapp.ui.camera.AppRoot
 import com.example.mypocketapp.ui.screens.*
 
 @Composable
@@ -29,6 +30,9 @@ fun AppNavHost(
         }
         composable(DrawerDestination.Reports.route) {
             ReportsScreen()
+        }
+        composable(DrawerDestination.Camera.route) {
+            AppRoot()
         }
         composable(DrawerDestination.Notifications.route) {
             NotificationsScreen()
